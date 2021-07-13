@@ -49,3 +49,55 @@ FROM employees e
 JOIN departments d  ON e.department_id = d.department_id
 JOIN jobs j ON e.job_id = j.job_id
 ORDER BY department_name;
+
+#非等值连接
+#案例1：查询员工工资级别
+SELECT salary,grade_level
+FROM employees e
+JOIN job_grades j
+ON e.salary BETWEEN j.lowest_sal AND j.highest_sal;
+
+#案例2：查询工资级别的个数大于>20的个数，并按工资级别降序
+SELECT COUNT(*) 级别员工个数,grade_level
+FROM employees e
+JOIN job_grades j
+ON e.salary BETWEEN j.lowest_sal AND j.highest_sal
+GROUP BY j.grade_level
+HAVING 级别员工个数 > 20
+ORDER BY grade_level DESC;
+
+
+#自连接
+#查询员工的名字，上级的名字
+SELECT 员工.last_name,经理.last_name
+FROM employees 员工
+JOIN employees 经理
+ON 员工.manager_id = 经理.employee_id;
+
+
+# 二、外连接
+/*
+应用场景：用于查询一个表中有，另一个表中没有的场景
+
+特点：
+1.外连接的查询结果为主表中的所有记录
+如果从表中有和他匹配的，则显示匹配的值
+如果从表中没有和它匹配的，则显示null
+
+2.左外连接，left join 左边是主表
+  右外连接，right join 右边是主表
+	
+3.左外和右外交换两个表的顺序，可以实现相同的效果
+4.全外连接 = 内连接的结果 + 表1中有表2中没有的 + 表2中有表1中没有的
+
+
+
+*/
+#左外连接
+#案例1：查询男朋友不在男生表的女生表
+
+SELECT b.* , bo.*
+FROM beauty b
+LEFT OUTER JOIN boys bo
+ON b.boyfriend_id = bo.id
+WHERE bo.id IS NULL;
